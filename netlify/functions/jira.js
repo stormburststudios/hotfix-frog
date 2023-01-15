@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 exports.handler = async function (event, context) {
-  const body = event.body;
+  const body = JSON.parse(event.body);
   const fields = body?.issue?.fields;
   const issueKey = fields?.key;
   const issueType = fields?.issuetype
@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
   const {
     displayName,
     avatarUrls
-  } = reporter;
+  } = reporter || {};
   
   if (issueType?.name === 'Bug') {
     try {
@@ -46,15 +46,19 @@ exports.handler = async function (event, context) {
           },
         ]
       }
-      axios.post('https://hooks.slack.com/services/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', payload);
+      const sm = await axios.post(process.env.SLACK_WEBHOOK_URL, payload);
+      console.log(sm);
       return {
         statusCode: 200,
         body: JSON.stringify({ message: "Sent to Slack" }),
       };
     } catch(e) {
-      console.error(e);
+      console.log(e);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ message: e }),
+      };
     }
-    return
   }
 
   return {
