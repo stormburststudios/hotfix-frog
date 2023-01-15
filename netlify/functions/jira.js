@@ -12,7 +12,7 @@ exports.handler = async function (event, context) {
     avatarUrls
   } = reporter || {};
   
-  if (issueType?.name === 'Bug') {
+  if (issueType?.name === 'Hotfix') {
     try {
       const payload = {
         "blocks": [
@@ -20,7 +20,7 @@ exports.handler = async function (event, context) {
             "type": "section",
             "text": {
               "type": "plain_text",
-              "text": "Oops! Somebody's broken production 🐸",
+              "text": "It would appear that somebody has broken production 🐸",
               "emoji": true
             }
           },
